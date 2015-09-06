@@ -74,15 +74,38 @@ function $(str){
 		//last
 		obj.last = function (){		
 			lastBol=true;			
-			obj[len-1].css=this.css;
+			obj[len-1].hide = this.hide;
+			obj[len-1].show = this.show;
+			this.css = this.css;
 			return obj[len-1];
 		} 
 		//hide
 		obj.hide =  function (){
-			for(var i=0;i<len;i++){
-				this[i].style.display = "none";
+			if(!len || lastBol){
+				if(!this.initDisplay){
+					this.initDisplay = window.getComputedStyle(this).display || this.currentStyle.display;
+				}
+				this.style.display = "none";
+			}else{
+				for(var i=0;i<len;i++){
+					if(!this[i].initDisplay){
+						this[i].initDisplay = window.getComputedStyle(this[i]).display || this[i].currentStyle.display;
+					}
+					this[i].style.display = "none";
+				}		
+			}		
+		}
+		//show
+		obj.show = function(){
+			if(!len ||lastBol){
+				this.style.display = this.initDisplay || "block";
+			}else{
+				for(var i=0;i<len;i++){
+					this[i].style.display = this[i].initDisplay || "block";			
+				}
 			}
-			
+			this.css = this.css;
+			return this;
 		}
 		return obj;
 	}
